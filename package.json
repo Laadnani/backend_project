@@ -1,15 +1,18 @@
 {
   "name": "backend_project",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.18.2",
-    "nodemon": "^2.0.22"
-  }
+    "nodemon": "^2.0.22",
+    "pg": "^8.11.0"
+  },
+  "keywords": [],
+  "description": ""
 }

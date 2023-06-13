@@ -1,0 +1,10 @@
+const {Router} = require ('express');
+
+const router = Router();
+
+router.get('/', (req, res) => {
+    res.send('using API router')
+});
+
+
+module.exports = router;

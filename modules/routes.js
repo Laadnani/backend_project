@@ -1,10 +1,17 @@
 const {Router} = require ('express');
+const controllers = require ('./controler');
+
+
+
 
 const router = Router();
 
-router.get('/', (req, res) => {
-    res.send('using API router')
-});
+router.get('/customers', controllers.getCustomers );
+
+router.get("/orders", controllers.getOrders);
+
+router.get('/Products', controllers.getProducts);
+
 
 
 module.exports = router;

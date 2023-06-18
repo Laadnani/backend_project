@@ -10,7 +10,7 @@ router.get('/customers', controllers.getCustomers );
 
 router.get("/orders", controllers.getOrders);
 
-router.get('/Products', controllers.getProducts);
+router.get('/products', controllers.getProducts);
 
 
 

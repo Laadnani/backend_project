@@ -7,13 +7,25 @@ const PORT = 5050;
 
 app.use(express.json());
 
-app.use(express.static('Pages/loginPage'));
+app.set('view-engine', 'ejs');
 
 
 app.get('/', (req, res) => {
-    res.redirect('/login.html')
+    res.send('home Page')
 
 });
+
+
+app.get('/login', (req,res, next) => {
+    res.render('login.ejs')
+
+});
+
+app.get('/register', (req,res, next) => {
+    res.render('register.ejs')
+
+});
+
 
 app.use('/api/v1', router );
 

@@ -2,11 +2,10 @@ const express = require ('express');
 const router = require('./modules/routes.js');
 const bcrypt = require('bcrypt');
 const pool = require('./modules/databasepg.js');
-const initializePassport = require('./passportConfig.js');
 const passport = require('passport');
 const session = require ('express-session');
 const LocalStrategy = require('passport-local').Strategy;
-const bcrypt = require('bcrypt');
+
 
 
 const app = express ();
@@ -26,16 +25,64 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser((id, done) => {
+  pool.query('SELECT * FROM customers WHERE id = $1', [id], (error, result) => {
+    if (error) {
+      return done(error);
+    }
 
-// login in strategy 
+    if (result.rows.length === 0) {
+      return done(new Error('User not found'));
+    }
 
-app.use(new LocalStrategy ({
-    usernameField: 'email',
-    passwordField: 'password',
-}, 
-    function (email, password, done) {
-        pool.query('')
-    }))
+    const user = result.rows[0];
+    done(null, user);
+  });
+});
+
+
+// authentication strategy 
+
+passport.use(
+    new LocalStrategy(
+      {
+        usernameField: 'email',
+        passwordField: 'password',
+      },
+      function (email, password, done) {
+        pool.query('SELECT * FROM customers WHERE email = $1', [email], (error, result) => {
+          if (error) {
+            return done(error);
+          }
+  
+          // Check if a user with the provided email exists in the database
+          if (result.rows.length === 0) {
+            return done(null, false, { message: 'Invalid email or password' });
+          }
+  
+          // Continue with password comparison or other authentication logic
+          // ...
+  
+          // Example password comparison using bcrypt
+          const user = result.rows[0];
+          bcrypt.compare(password, user.password, (bcryptError, isMatch) => {
+            if (bcryptError) {
+              return done(bcryptError);
+            }
+  
+            if (!isMatch) {
+              return done(null, false, { message: 'Invalid email or password' });
+            }
+  
+            // Authentication successful
+            return done(null, user);
+          });
+        });
+      }
+    )
+  );
+
 
 // views on the home page 
 
@@ -50,6 +97,13 @@ app.get('/login', (req,res) => {
     res.render('login.ejs')
 
 });
+// views on the Profile page 
+app.get('/profile', (req,res) => {
+  res.render('profile.ejs')
+
+});
+
+
 
 // views on the login page  to authenticate 
 
@@ -75,6 +129,15 @@ app.post('/register',  async (req,res) => {
     } catch (error) {
         console.log('error occured duting registration', error);
     }
+});
+
+// logout From the session 
+
+app.post('/logout', function(req, res, next) {
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    res.redirect('/login');
+  });
 });
 
 app.use('/api/v1', router );

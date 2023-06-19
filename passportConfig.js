@@ -1,4 +1,4 @@
-const LocalStrategy = require('passport-local').Strategy;
+ /* const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const passport = require ('passport');
 
@@ -31,3 +31,6 @@ passport.deserializeUser((id, done) =>done(null, getUserById(id)))
 }
 
 module.exports = initializePassport;
+
+
+*/
